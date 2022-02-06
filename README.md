@@ -24,7 +24,7 @@ interface for interacting with the microcontroller.
 	- Along with the power supply, provides additonal power for activating the relay.
 	![battery](media/battery.jpg)
 
-<p align="right"></p>
+<p align="left"></p>
 
 ### Operation
 
