@@ -5,9 +5,9 @@
  */
 
 // these Blynk definitions ALWAYS have to be first
-#define BLYNK_TEMPLATE_ID "TMPLVfTzadTY"
-#define BLYNK_DEVICE_NAME "Quickstart Template"
-#define BLYNK_AUTH_TOKEN "NCrPdC9GLofbR5uRy16kuPFjnu21nyxf"
+#define BLYNK_TEMPLATE_ID "TEMPLATE-ID"
+#define BLYNK_DEVICE_NAME "DEVICE-NAME"
+#define BLYNK_AUTH_TOKEN "YOUR-AUTH-TOKEN"
 #define BLYNK_PRINT Serial
 
 // define the SIM type
@@ -32,12 +32,12 @@
 #include <SoftwareSerial.h>
 SoftwareSerial SerialAT(TX, RX);
 
-// configure GPRS settings
+// configure GPRS settings (user and pass may be optional depending on your SIM carD)
 const char apn[] = "iot.1nce.net";
 const char user[] = "";
 const char pass[] = "";
-// configure Blynk authentication token
-const char auth[] = "NCrPdC9GLofbR5uRy16kuPFjnu21nyxf";
+// configure Blynk authentication token (same as above)
+const char auth[] = "YOUR-AUTH-TOKEN";
 
 // initialize modem
 TinyGsm modem(SerialAT);
