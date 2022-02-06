@@ -2,6 +2,10 @@
  * Author: Alex Waclawik
  * Github: https://github.com/AlexWaclawik/Arduino-IoT-Switch
  * This project is for a remote AC outlet switch that is made using an Arduino microcontroller.
+ * 
+ * IMPORTANT: Adjust BLYNK_HEARTBEAT (in sec) in BlynkGsmClient.h to suit your application. 
+ * newHeartbeatInterval * 2.3 formula will be applied. For example, for a 600 sec heartbeat 
+ * you will get a notification regarding the connection status with 23 min delay in worst case.
  */
 
 // these Blynk definitions ALWAYS have to be first
@@ -32,7 +36,7 @@
 #include <SoftwareSerial.h>
 SoftwareSerial SerialAT(TX, RX);
 
-// configure GPRS settings (user and pass may be optional depending on your SIM carD)
+// configure GPRS settings (user and pass may be optional depending on your SIM card)
 const char apn[] = "iot.1nce.net";
 const char user[] = "";
 const char pass[] = "";
@@ -94,8 +98,8 @@ void setup() {
   // configure relay and ensure it is off
   pinMode(RELAY_PIN1, OUTPUT);
   digitalWrite(RELAY_PIN1, HIGH);
-  // pinMode(RELAY_PIN1, OUTPUT);
-  // digitalWrite(RELAY_PIN1, HIGH);
+  // pinMode(RELAY_PIN2, OUTPUT);
+  // digitalWrite(RELAY_PIN2, HIGH);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   
@@ -119,6 +123,10 @@ void setup() {
 
   // connect to Blynk
   Blynk.begin(auth, modem, apn, user, pass);
+
+  // verify heartbeat is set correctly
+  SerialMon.print("Heartbeat (sec): ");
+  SerialMon.println(BLYNK_HEARTBEAT);
 }
 
 
