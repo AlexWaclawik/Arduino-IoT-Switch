@@ -28,7 +28,16 @@ interface for interacting with the microcontroller.
 
 ### Dependancies
 
-1. [TinyGSM](https://github.com/vshymanskyy/TinyGSM)
+-	[TinyGSM](https://github.com/vshymanskyy/TinyGSM)
+-	[Blynk](https://github.com/blynkkk/blynk-library)
+
+To Install:
+1. [Download the latest release from here]()
+2. Unzip the contents. The necessary libraries are located in ```/include```
+3. Place the dependancies into your Arduino Libraries Folder
+	- On Windows: ```C:\Users\user\Documents\Arduino\libraries```
+	- On Linux: ``` ~/home/user/sketchbook/libraries```
+	- On Mac: ``` ~/Documents/Arduino/libraries```
 
 <p align="right"></p>
 
