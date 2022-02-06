@@ -36,7 +36,7 @@ interface for interacting with the microcontroller.
 -	[Blynk](https://github.com/blynkkk/blynk-library)
 
 To Install:
-1. [Download the latest release from here]()
+1. [Download the latest release from here](https://github.com/AlexWaclawik/Arduino-IoT-Switch/releases)
 2. Unzip the contents. The necessary libraries are located in ```/include```
 3. Place the dependancies into your Arduino Libraries Folder
 	- On Windows: ```C:\Users\user\Documents\Arduino\libraries```
