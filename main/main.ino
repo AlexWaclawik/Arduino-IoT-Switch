@@ -1,11 +1,12 @@
 /*
  * Author: Alex Waclawik
  * Github: https://github.com/AlexWaclawik/Arduino-IoT-Switch
+ * Version: 1.1 (Test Branch)
  * This project is for a remote AC outlet switch that is made using an Arduino microcontroller.
  * 
  * IMPORTANT: Adjust BLYNK_HEARTBEAT (in sec) in BlynkGsmClient.h to suit your application. 
- * newHeartbeatInterval * 2.3 formula will be applied. For example, for a 600 sec heartbeat 
- * you will get a notification regarding the connection status with 23 min delay in worst case.
+ * newHeartbeatInterval * 2.3 formula will be applied. For example, for a 300 sec heartbeat 
+ * you will get a notification regarding the connection status with 11.5 min delay in worst case.
  */
 
 // these Blynk definitions ALWAYS have to be first
@@ -40,7 +41,7 @@ SoftwareSerial SerialAT(TX, RX);
 const char apn[] = "iot.1nce.net";
 const char user[] = "";
 const char pass[] = "";
-// configure Blynk authentication token (same as above)
+// configure Blynk authentication token
 const char auth[] = "YOUR-AUTH-TOKEN";
 
 // initialize modem
@@ -49,6 +50,9 @@ TinyGsm modem(SerialAT);
 // define global variables
 bool startup = true;
 float deviceUptime = 0;
+bool relayStatus = false;
+float relayStartTime = 0;
+
 
 /*
  * called whenever a widget writes to virtual pin V1.
@@ -68,6 +72,9 @@ BLYNK_WRITE(V1) {
     Blynk.virtualWrite(V4, 255);
     // update device uptime
     updateDeviceTime();
+    // start relay uptime
+    relayStatus = true;
+    relayStartTime = deviceUptime;
   }
   else {
     // turn off relay
@@ -79,6 +86,25 @@ BLYNK_WRITE(V1) {
     Blynk.virtualWrite(V4, 0);
     // update device uptime
     updateDeviceTime();
+    // stop relay uptime
+    relayStatus = false;
+  }
+}
+
+
+/*
+ * called whenever a widget reads virtual pin V7
+ * first it will update the device uptime then use it to calulate the relay uptime
+ * after which it will then write it to virtual pin V6
+ * if relay is not on, it will instead return a value of -1.0
+ */
+BLYNK_READ(V7) {
+  if (relayStatus) {
+    updateDeviceTime();
+    Blynk.virtualWrite(V6, deviceUptime - relayStartTime);
+  }
+  else {
+    Blynk.virtualWrite(V6, -1.0);
   }
 }
 
@@ -90,6 +116,7 @@ void updateDeviceTime() {
   deviceUptime = (((millis() / 1000) / 60) / 60);
   Blynk.virtualWrite(V5, deviceUptime);
 }
+
 
 /*
  * setup and initializes device on startup (or reboot) and will only run once

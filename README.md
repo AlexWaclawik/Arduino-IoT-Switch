@@ -26,10 +26,6 @@ interface for interacting with the microcontroller.
 
 <p align="right"></p>
 
-### Operation
-
-<p align="right"></p>
-
 ### Dependancies
 
 -	[TinyGSM](https://github.com/vshymanskyy/TinyGSM)
@@ -47,7 +43,6 @@ To Install:
 
 ### Credits
 
-1. [Project idea inspired by video from GaryExplains](https://www.youtube.com/watch?v=7swG4XVSx50)
-2. [Code for manipulating relay pins taken from GaryExplains](https://github.com/garyexplains/examples/blob/master/MKR1000/mysmartswitch.ino)
+-	[Project idea inspired by video from GaryExplains](https://www.youtube.com/watch?v=7swG4XVSx50)
 
 <p align="right"></p>
