@@ -29,12 +29,11 @@ application interface for interacting with the microcontroller.
 ### Operation
 
 **Blynk Heartbeat Configuration**
-As the devices with 1NCE connectivity are placed behind a NAT gateway, the public IP traffic is routed through the NAT Gateway/Internet Breakout. 
+- As the devices with 1NCE connectivity are placed behind a NAT gateway, the public IP traffic is routed through the NAT Gateway/Internet Breakout. 
 After 350 seconds of no packets being transmitted, the established connection via the Internet Breakout will be closed automatically. 
 To keep the connection alive within 350 seconds a device must send a keep-alive packet at least once in the 350-second timeframe. 
 Otherwise, the device must re-establish the connection after 350 seconds. The default heartbeat interval for GSM is 60 seconds, but you can
-adjust it to suit your application. When setting the Blynk heartbeat, the following formula is applied:
-- heartbeat interval = time * 2.3
+adjust it to suit your application. When setting the Blynk heartbeat, the following formula is applied: ***heartbeat interval = time * 2.3***
 For example, with a 300 second heartbeat you will get a notification regarding the connection status with a 12 minute delay in the worst case.
 
 <p align="right"></p>
