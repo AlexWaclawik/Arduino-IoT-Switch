@@ -22,6 +22,7 @@
 #include <SPI.h>
 #include <TinyGsmClient.h>
 #include <BlynkSimpleTinyGSM.h>
+#include <MCP9808.h>
 
 #define SerialMon Serial
 
@@ -47,11 +48,16 @@ const char auth[] = "YOUR-AUTH-TOKEN";
 // initialize modem
 TinyGsm modem(SerialAT);
 
+// initialize sensor object
+MCP9808 tempSensor;
+
 // define global variables
 bool startup = true;
 float deviceUptime = 0;
 bool relayStatus = false;
 float relayStartTime = 0;
+int signalQuality = 0;
+float currentTemp = 0;
 
 
 /*
@@ -108,6 +114,31 @@ BLYNK_READ(V7) {
   }
 }
 
+
+/*
+ * called whenever a widget reads virtual pin V8
+ * returns signal quality to virtual pin V9
+ */
+BLYNK_READ(V8) {
+  signalQuality = modem.getSignalQuality();
+  Blynk.virtualWrite(V9, signalQuality);
+  SerialMon.println("Signal Quality: ");
+  SerialMon.print(signalQuality);
+}
+
+
+/*
+ * called whenever a widget reads virtual pin V2
+ * returns current temperature to virtual pin V3
+ */
+BLYNK_READ(V2) {
+  currentTemp = tempSensor.tAmbient / 16.0;
+  Blynk.virtualWrite(V3, currentTemp);
+  SerialMon.println("Current Temperature: ");
+  SerialMon.print(currentTemp);
+}
+
+
 /*
  * updates the device uptime in hours, and
  * then pushes the uptime to virtual pin V5
@@ -132,7 +163,14 @@ void setup() {
   
   // set console baud rate
   SerialMon.begin(9600);
-  delay(10);
+  delay(1000);
+
+  // initialize temperature sensor
+  uint8_t status = tempSensor.begin();
+  if (status != 0) {
+    SerialMon.println("Sensor Error! Status = ");
+    SerialMon.print(status);
+  }
 
   // set GSM module baud rate
   SerialAT.begin(9600);
