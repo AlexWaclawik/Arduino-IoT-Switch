@@ -15,6 +15,7 @@
  * IMPORTANT: Configuration of Blynk Heartbeat Interval
  * Please read the Blynk Heartbeat Configuration section of the README
  * as configuring this is very important for your application
+ * https://github.com/AlexWaclawik/Arduino-IoT-Switch/tree/testing#operation
  */
 #define BLYNK_HEARTBEAT 300 
 
