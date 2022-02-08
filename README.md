@@ -1,8 +1,8 @@
 ## Arduino IoT Switch
 
 This project is for a remote AC outlet switch that is made using an Arduino microcontroller. This
-was achieved using the [Blynk IoT platform and libraries](https://docs.blynk.io/en/), which creates a neat mobile application
-interface for interacting with the microcontroller.
+was achieved using the [Blynk IoT platform and libraries](https://docs.blynk.io/en/), which creates a neat smartphone
+application interface for interacting with the microcontroller.
 
 <p align="right"></p>
 
@@ -28,10 +28,10 @@ interface for interacting with the microcontroller.
 
 ### Dependancies
 
--	[TinyGSM](https://github.com/vshymanskyy/TinyGSM)
--	[Blynk](https://github.com/blynkkk/blynk-library)
+**This project was built using specific versions of the libraries, which are included in the release.**
+**Using newer/current versions of the libraries may break functionality.**
 
-To Install:
+How To Install Libraries:
 1. [Download the latest release from here](https://github.com/AlexWaclawik/Arduino-IoT-Switch/releases)
 2. Unzip the contents. The necessary libraries are located in ```/include```
 3. Place the dependancies into your Arduino Libraries Folder
@@ -44,5 +44,8 @@ To Install:
 ### Credits
 
 -	[Project idea inspired by video from GaryExplains](https://www.youtube.com/watch?v=7swG4XVSx50)
+-	[TinyGSM by Volodymyr Shymanskyy](https://github.com/vshymanskyy/TinyGSM)
+-	[Blynk](https://github.com/blynkkk/blynk-library)
+-	[MCP9808 by Jack Christensen](https://github.com/JChristensen/MCP9808)
 
 <p align="right"></p>
