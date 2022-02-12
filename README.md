@@ -58,6 +58,5 @@ How To Install Libraries:
 -	[Project idea inspired by video from GaryExplains](https://www.youtube.com/watch?v=7swG4XVSx50)
 -	[TinyGSM by Volodymyr Shymanskyy](https://github.com/vshymanskyy/TinyGSM)
 -	[Blynk](https://github.com/blynkkk/blynk-library)
--	[MCP9808 by Jack Christensen](https://github.com/JChristensen/MCP9808)
 
 <p align="right"></p>
