@@ -1,4 +1,4 @@
 - added functionality to record the elapsed time while relay is running
 - added functionality to check the current signal quality
-- added functionality to check current ambient temperature with the MCP9808 sensor
 - added line to configure the Blynk Heartbeat Interval
+- added push notifications to startup and relay operation
