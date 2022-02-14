@@ -113,8 +113,8 @@ BLYNK_WRITE(V7) {
     if (relayStatus) {
       updateDeviceTime();
       Blynk.virtualWrite(V6, deviceUptime - relayStartTime);
-      SerialMon.println("Relay Uptime: ");
-      SerialMon.print(deviceUptime - relayStartTime);
+      SerialMon.print("Relay Uptime: ");
+      SerialMon.println(deviceUptime - relayStartTime);
     }
   }
 }
@@ -163,8 +163,8 @@ BLYNK_WRITE(V8) {
     Blynk.virtualWrite(V9, signalCond);
     Blynk.virtualWrite(V10, 255);
     Blynk.setProperty(V10, "color", signalColor);
-    SerialMon.println("Signal Quality: ");
-    SerialMon.print(signalCond);
+    SerialMon.print("Signal Quality: ");
+    SerialMon.println(signalCond);
   }
 }
 
