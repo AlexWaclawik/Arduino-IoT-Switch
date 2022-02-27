@@ -169,6 +169,19 @@ BLYNK_WRITE(V8) {
 }
 
 
+BLYNK_CONNECTED() {
+  if (startup) {
+    // check relay status
+    Blynk.syncVirtual(V1);
+    // checks signal quality
+    Blynk.syncVirtual(V8);
+    startup = false;
+    // sends push notification that device has rebooted
+    Blynk.logEvent("startup","The device has been rebooted");
+  }
+}
+
+
 /*
  * updates the device uptime in hours, and
  * then pushes the uptime to virtual pin V5
@@ -227,13 +240,4 @@ void setup() {
  */
 void loop() {
   Blynk.run();
-  if (startup) {
-    // check relay status
-    Blynk.syncVirtual(V1);
-    // checks signal quality
-    Blynk.syncVirtual(V8);
-    startup = false;
-    // sends push notification that device has rebooted
-    Blynk.logEvent("startup","The device has been rebooted");
-  }
 }
