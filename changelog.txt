@@ -3,3 +3,9 @@ Version 1.1
 	- added functionality to check the current signal quality
 	- added line to configure the Blynk Heartbeat Interval
 	- added push notifications to startup and relay operation
+	
+Version 1.2
+	- improved stability
+	- added functionality to automatically check connection status and reboot if needed
+	- added functionality to continue relay elapsed time if device reboots
+		- relay time is stored in EEPROM and is cleared when relay is turned off

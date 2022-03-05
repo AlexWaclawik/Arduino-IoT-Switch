@@ -1,7 +1,7 @@
 /*
  * Author: Alex Waclawik
  * Github: https://github.com/AlexWaclawik/Arduino-IoT-Switch
- * Version: 1.1
+ * Version: 1.2
  * This project is for a remote AC outlet switch that is made using 
  * an Arduino UNO-like microcontroller, and the Blynk IoT library.
  */
@@ -11,6 +11,7 @@
 #define BLYNK_DEVICE_NAME "DEVICE NAME"
 #define BLYNK_AUTH_TOKEN "YOUR-AUTH-TOKEN"
 #define BLYNK_PRINT Serial
+#define BLYNK_NO_FANCY_LOGO
 
 /* 
  * IMPORTANT: Configuration of Blynk Heartbeat Interval
@@ -27,6 +28,7 @@
 #include <SPI.h>
 #include <TinyGsmClient.h>
 #include <BlynkSimpleTinyGSM.h>
+#include <EEPROM.h>
 
 #define SerialMon Serial
 
@@ -34,6 +36,9 @@
 #define TX 10 // Microcontroller RX
 #define RX 11 // Microcontroller TX
 #define RELAY_PIN1 12 // Relay Control Pin
+#define LED 13 // onboard LED for testing
+#define PWRKEY 6 // power pin
+#define RST 7 // reset pin
 // just one relay pin needed for now
 // if you want to use the other one, just uncomment all the relevant lines
 //#define RELAY_PIN2 XX
@@ -54,9 +59,11 @@ TinyGsm modem(SerialAT);
 
 // define global variables
 bool startup = true;
-float deviceUptime = 0;
+uint8_t deviceUptime = 0;
 bool relayStatus = false;
-float relayStartTime = 0;
+uint8_t relayStartTime = 0;
+uint8_t eeRelayTimeAddress = 0;
+uint8_t relayTimeBackup = 0;
 
 
 /*
@@ -97,6 +104,8 @@ BLYNK_WRITE(V1) {
     updateDeviceTime();
     // stop relay uptime
     relayStatus = false;
+    // reset EEPROM
+    clearEE();
   }
 }
 
@@ -112,9 +121,11 @@ BLYNK_WRITE(V7) {
   if (pinValue != 0) {
     if (relayStatus) {
       updateDeviceTime();
-      Blynk.virtualWrite(V6, deviceUptime - relayStartTime);
+      uint8_t relayTime = (deviceUptime - relayStartTime) + relayTimeBackup;
+      Blynk.virtualWrite(V6, relayTime);
       SerialMon.print("Relay Uptime: ");
-      SerialMon.println(deviceUptime - relayStartTime);
+      SerialMon.println(relayTime);
+      EEPROM.put(eeRelayTimeAddress, relayTime);
     }
   }
 }
@@ -169,6 +180,11 @@ BLYNK_WRITE(V8) {
 }
 
 
+// declare reset function at address 0
+// this is hardware dependant and may not work for your board
+void(* resetFunc) (void) = 0;
+
+
 /*
  * updates the device uptime in hours, and
  * then pushes the uptime to virtual pin V5
@@ -180,9 +196,21 @@ void updateDeviceTime() {
 
 
 /*
+ * clears the EEPROM
+ */
+void clearEE() {
+  EEPROM.update(eeRelayTimeAddress, 0);
+}
+
+
+/*
  * setup and initializes device on startup (or reboot) and will only run once
  */
 void setup() {
+  // default state
+  pinMode(RST, OUTPUT);
+  digitalWrite(RST, HIGH);
+  
   // configure relay and ensure it is off
   pinMode(RELAY_PIN1, OUTPUT);
   digitalWrite(RELAY_PIN1, HIGH);
@@ -197,12 +225,13 @@ void setup() {
 
   // set GSM module baud rate
   SerialAT.begin(9600);
-  delay(6000);
+  delay(1000);
 
   // initialize modem
   SerialMon.println("Initializing modem...");
   modem.restart();
-  modem.waitForNetwork(600000L);
+  // 30 second timeout
+  modem.waitForNetwork(300000L);
 
   // get modem info
   String modemInfo = modem.getModemInfo();
@@ -215,25 +244,38 @@ void setup() {
   // verify heartbeat is configured correctly
   SerialMon.print("Heartbeat (sec): ");
   SerialMon.println(BLYNK_HEARTBEAT);
+
+  // sync relay time from EEPROM
+  EEPROM.get(eeRelayTimeAddress, relayTimeBackup);
+  SerialMon.print("Relay Time Continued From: ");
+  SerialMon.println(relayTimeBackup);
 }
 
 
 /*
  * main function that loops during device operation
- * On startup, the device will sync the current value of the virtual pin V1 and V8 
- * which will call the write functions for those respective pins
+ * On startup, the device will sync the current value of the virtual pin V1 and V8 which will call the write functions for those respective pins
  * this ensures that if the relay was ON when the device loses power, it will resume on reboot
- * it also makes the device check signal quality on startup
+ * furthermore if the device loses connection to Blynk it will restart the device by calling the reset function
  */
 void loop() {
-  Blynk.run();
-  if (startup) {
-    // check relay status
-    Blynk.syncVirtual(V1);
-    // checks signal quality
-    Blynk.syncVirtual(V8);
-    startup = false;
-    // sends push notification that device has rebooted
-    Blynk.logEvent("startup","The device has been rebooted");
+  if (Blynk.connected() == true){
+    if (startup) {
+      // check relay status
+      Blynk.syncVirtual(V1);
+      // check signal quality
+      Blynk.syncVirtual(V8);
+      // sends push notification that device has rebooted
+      Serial.println("The device has rebooted");
+      Blynk.logEvent("reboot","The device has rebooted");
+      startup = false;
+    }
+    Blynk.run();
+  }
+  else if (Blynk.connected() == false){
+    Serial.println("The device will now reboot");
+    delay(1000);
+    // call reset
+    resetFunc();
   }
 }
